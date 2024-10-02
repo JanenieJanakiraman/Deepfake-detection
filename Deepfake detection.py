@@ -1,13 +1,10 @@
-#!/usr/bin/env python
-# coding: utf-8
 
-# In[1]:
 
 
 pip install tensorflow keras opencv-python matplotlib numpy pandas scikit-learn
 
 
-# In[ ]:
+
 
 
 import os
@@ -16,13 +13,13 @@ import cv2
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-# Define paths
+#accessing the dataset
 base_path = '/Users/janeniej/Downloads/Dataset'
 train_path = os.path.join(base_path, '/Users/janeniej/Downloads/Dataset/Train')
 test_path = os.path.join(base_path, '/Users/janeniej/Downloads/Dataset/Test')
 validate_path = os.path.join(base_path, '/Users/janeniej/Downloads/Dataset/Validation')
 
-# Function to load images
+# here, I am loading the images
 def load_images_from_folder(folder):
     images = []
     labels = []
@@ -37,18 +34,18 @@ def load_images_from_folder(folder):
                 labels.append(0 if label == 'real' else 1)  # Assign labels
     return np.array(images), np.array(labels)
 
-# Load training, validation, and test images
+# loading the training, test validation images.
 X_train, y_train = load_images_from_folder(train_path)
 X_val, y_val = load_images_from_folder(validate_path)
 X_test, y_test = load_images_from_folder(test_path)
 
-# Normalize images
+# Normaliing images
 X_train = X_train / 255.0
 X_val = X_val / 255.0
 X_test = X_test / 255.0
 
 
-# In[ ]:
+
 
 
 datagen = ImageDataGenerator(
@@ -64,7 +61,7 @@ datagen = ImageDataGenerator(
 datagen.fit(X_train)
 
 
-# In[ ]:
+
 
 
 from tensorflow.keras.models import Sequential
@@ -88,7 +85,6 @@ model = create_model()
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 
-# In[ ]:
 
 
 history = model.fit(datagen.flow(X_train, y_train, batch_size=32),
@@ -96,14 +92,11 @@ history = model.fit(datagen.flow(X_train, y_train, batch_size=32),
                     epochs=20)
 
 
-# In[ ]:
 
 
 test_loss, test_accuracy = model.evaluate(X_test, y_test)
 print(f"Test accuracy: {test_accuracy * 100:.2f}%")
 
-
-# In[ ]:
 
 
 model.save('deepfake_detection_model.h5')
